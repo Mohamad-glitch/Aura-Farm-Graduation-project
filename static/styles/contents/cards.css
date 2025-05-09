@@ -1,0 +1,179 @@
+.content {
+    flex: 1;
+    padding: 20px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.header h2 {
+    font-size: 24px;
+    font-weight: 500;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.card {
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    min-height: 120px;
+    position: relative;
+    padding-top: 30px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card h3 {
+    letter-spacing: 1px;
+}
+
+.card h3[contenteditable="true"] {
+    outline: none;
+    cursor: text;
+    transition: all 0.2s;
+}
+
+.card h3[contenteditable="true"]:focus {
+    border-bottom: 1px solid var(--primary) !important;
+}
+
+.btn.active {
+    background-color: var(--primary);
+    color: red;
+}
+
+.growth-cards {
+    grid-column: span 3;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.growth-cards .card {
+    padding: 15px;
+}
+
+.growth-cards h3 {
+    font-size: 16px;
+    margin-bottom: 15px;
+    color: var(--text-light);
+}
+
+.farmer-plan {
+    grid-column: span 2;
+}
+
+.farmer-plan h3 {
+    font-size: 16px;
+    margin-bottom: 15px;
+    color: var(--text-light);
+}
+
+.productive-analysis {
+    grid-column: span 2;
+}
+
+.productive-analysis h3 {
+    font-size: 16px;
+    margin-bottom: 15px;
+    color: var(--text-light);
+}
+
+.chart {
+    display: flex;
+    align-items: flex-end;
+    height: 150px;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.chart-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--text-light);
+}
+
+.stats h3 {
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.soil-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Default progress bar color */
+.progress::before {
+    background-color: var(--primary);
+}
+
+/* Mango-specific color states
+.mango-progress .high-growth::before{
+    background-color: #388E3C;
+}
+
+.mango-progress.peak-growth::before{
+    background-color: #2E7D32; 
+}
+
+.mango-progress.harvest-ready::before{
+    background-color: #FF9800;
+    animation: pulse 2s infinite;
+    
+} */
+
+/* Remove button styles */
+.remove-card {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    color: #ff6b6b;
+    cursor: pointer;
+    font-size: 16px;
+    z-index: 2;
+    transition: all 0.2s;
+    width: 24px;
+    height: 24px;
+    display: none; /* Hidden by default */
+    opacity: 0.8;
+    padding: 0;
+    margin: 0;
+}
+
+.remove-card:hover {
+    color: #ff0000;
+    opacity: 1;
+    transform: scale(1.1);
+}

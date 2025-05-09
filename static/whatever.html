@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toggle Server</title>
+    <script>
+        function fetchServerStatus() {
+            const token = localStorage.getItem('authToken');
+
+            fetch('https://whatever-qw7l.onrender.com/farms/window-status', {
+                method: 'GET',
+                headers: {
+                    authorization: `Bearer ${token}`
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch server status');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const p = document.getElementById('togglep');
+                const currentState = data.status; // Assuming the server returns { status: "open" } or { status: "close" }
+                p.dataset.state = currentState;
+                p.textContent = currentState === 'open' ? 'Close' : 'Open';
+            })
+            .catch(error => {
+                console.error('Error fetching server status:', error);
+            });
+        }
+
+        // Fetch the current server status when the page loads
+        window.onload = fetchServerStatus;
+    </script>
+</head>
+<body style="background-color: #333; color: white; text-align: center; padding: 20px;">
+    <p id="togglep" data-state="close" onclick="toggleServer()">unknown</p>
+</body>
+</html>

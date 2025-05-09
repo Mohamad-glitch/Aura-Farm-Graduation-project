@@ -1,0 +1,20 @@
+- chat bot -- Secondary - shlool
+
+- login page -- Primary (SHLOLOL)
+ 
+- register page -- Primary (SHLOLOL) :: DONE
+
+- data storing -- Primary
+
+- search -- Secondary
+
+- notifications -- Primary :: half DONE
+
+- edit confirmations -- Primary
+
+- index page
+|- swap the data on temp, soil moisture % for each card -- Primary 
+|-- animation entering the page
+
+- Sensors page -- Primary
+|- sensors for each card -- Primary

@@ -1,0 +1,12 @@
+fastapi[all]
+uvicorn
+sqlmodel
+python-jose[cryptography]
+pyjwt
+python-multipart
+sqlalchemy
+requests
+dotenv
+pydantic
+starlette
+ultralytics

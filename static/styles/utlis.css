@@ -1,0 +1,210 @@
+.btn {
+    background-color: var(--card-bg);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-light);
+    transition: all 0.2s;
+}
+
+.btn:hover {
+    background-color: #e0e0e0;
+    color: black;
+}
+
+.progress {
+    height: 6px;
+    background-color: #e0e0e0;
+    border-radius: 3px;
+    position: relative;
+    margin-top: 20px;
+}
+
+.progress::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: var(--progress);
+    background-color: var(--primary);
+    border-radius: 3px;
+}
+
+.progress span {
+    position: absolute;
+    top: -25px;
+    left: 0;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.progress-bar {
+    height: 6px;
+    background-color: #e0e0e0;
+    border-radius: 3px;
+    margin-top: 20px;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: var(--secondary);
+    border-radius: 3px;
+    width: 0;
+    transition: width 0.5s ease;
+}
+
+.chart-bar {
+    flex: 1;
+    background-color: var(--primary);
+    border-radius: 4px 4px 0 0;
+    position: relative;
+    transition: height 0.5s ease;
+}
+
+.chart-bar span {
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+}
+
+.stat {
+    background-color: #f5f5f5;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.stat span:first-child {
+    font-size: 12px;
+    color: var(--text-light);
+    display: block;
+    margin-bottom: 5px;
+}
+
+.stat span:last-child {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.soil-stats .stat {
+    background-color: transparent;
+    padding: 0;
+}
+
+.soil-stats .stat span:first-child {
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--text);
+}
+
+.soil-stats .stat small {
+    font-size: 14px;
+    color: var(--text-light);
+}
+
+.recommendation {
+    background-color: #E8F5E9;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    color: var(--primary-dark);
+    text-align: center;
+}
+
+/* Add Card Button */
+.add-card {
+    background-color: rgba(76, 175, 80, 0.1);
+    border: 2px dashed var(--primary);
+    border-radius: 8px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 120px;
+}
+
+.add-card:hover {
+    background-color: rgba(76, 175, 80, 0.2);
+    transform: scale(1.02);
+}
+
+.add-card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--primary);
+}
+
+.add-card i {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+#noti{
+    position: relative;
+}
+
+.notification-badge {
+    position: absolute;
+    top: 0px; 
+    right: -5px; 
+    background-color: #ff5555;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center; 
+    justify-content: center; 
+    z-index: 10; 
+}
+
+.notification-dropdown {
+    margin-right: 10px;
+    margin-top: 10px;
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 200px;
+    max-height: 0;
+    overflow-y: auto;
+    z-index: 1000;
+    opacity: 0;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+
+.notification-dropdown.open {
+    max-height: 250px;
+    opacity: 1;
+}
+
+.notification-item {
+    padding: 10px;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 14px;
+    color: #333;
+    align-self: center;
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+.notification-item:hover {
+    background-color: #f9f9f9;
+}

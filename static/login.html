@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuraFarm - Login</title>
+    <link rel="stylesheet" href="/static/styles/styles.css">
+    <link rel="stylesheet" href="/static/styles/utlis.css">
+    <link rel="stylesheet" href="/static/styles/contents/login.css">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-left">
+            <div class="login-left-content">
+                <div class="login-logo">
+                    <i class="fas fa-carrot"></i>
+                    <a href=""> <span class="fas"> AuraFarm</span> </a>
+                </div>
+                <h2>Welcome Back!</h2>
+                <p>Manage your farm efficiently with real-time data and smart analytics to maximize your crop yield and minimize resource waste.</p>
+            </div>
+        </div>
+        <div class="login-right">
+            <div class="login-form">
+                <h2>Sign In</h2>
+                <form method="POST" action="https://whatever-qw7l.onrender.com/login_1">
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" placeholder="Enter your password">
+                    </div>
+                    <button type="submit" class="login-btn">Login</button>
+                </form>
+                <div class="login-footer">
+                    <p>Don't have an account? <a href="https://whatever-qw7l.onrender.com/register">Sign Up</a></p>
+                    <a href="https://whatever-qw7l.onrender.com">Forgot password?</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/static/scripts/utils/login.js"></script>
+</body>
+</html>

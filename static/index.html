@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">    
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuraFarm</title>
+    <!-- CSS Imports -->
+    <link rel="stylesheet" href="/static/styles/styles.css">
+    <link rel="stylesheet" href="/static/styles/utlis.css">
+
+    <link rel="stylesheet" href="/static/styles/contents/sidebar.css">
+    <link rel="stylesheet" href="/static/styles/contents/cards.css">
+    <link rel="stylesheet" href="/static/styles/contents/multi_media.css">
+    <link rel="stylesheet" href="/static/styles/contents/weather.css">
+    <link rel="stylesheet" href="/static/styles/contents/loading.css">
+    <link rel="stylesheet" href="/static/styles/contents/chatbot.css">
+    
+
+    <!-- Fonst/SVGs Imports -->
+        <link  rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
+        <link  rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+</head>
+
+<body>
+    <!-- Loading Screen -->
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h1 class="fas"><i class="fas fa-carrot" ></i>AuraFarm</h1>
+            </div>
+
+            <nav class="main-nav fa-solid">
+                <a href="#" id="username"><i class="fas fa-user"></i>My Farm</a>
+                <a href="#" class="active"><i class="fas fa-chart-line "></i> Overview</a>
+                <!-- <a href="#"><i class="fas fa-tractor"></i> Fields</a> -->
+                <a href="https://whatever-qw7l.onrender.com/sensors"><i class="fas fa-microchip"></i> Sensors</a>
+            </nav>
+
+            <div class="sidebar-calendar">
+                <div class="calendar-header">
+                    <button class="calendar-nav" id="prev-month">&lt;</button>
+                    <h3 id="current-month"></h3>
+                    <button class="calendar-nav" id="next-month">&gt;</button>
+                </div>
+                <div class="calendar-weekdays">
+                    <div>Sun</div>
+                    <div>Mon</div>
+                    <div>Tue</div>
+                    <div>Wed</div>
+                    <div>Thu</div>
+                    <div>Fri</div>
+                    <div>Sat</div>
+                </div>
+                <div class="calendar-days" id="calendar-days"></div>
+            </div>
+            <div id="event-display">
+                <strong></strong>
+            </div>
+            
+            <a href="https://whatever-qw7l.onrender.com/login" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            <script src="/static/scripts/utils/logout.js"></script>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="content">
+            <div class="header">
+                <h2>Overview</h2>
+                <div class="actions">
+                    <button class="btn" id="edit"><i class="fas fa-edit"></i></button>
+                    <button class="btn" id="confirm-edit" style="display: none;"><i class="fas fa-check-circle"></i></button>
+                    <button class="btn" id="noti"><i class="fas fa-bell"></i></button>
+                    <button class="btn" id="settings"><i class="fas fa-cog"></i></button>
+                </div>
+            </div>
+            <div class="dashboard-grid">
+                <!-- Growth Cards -->
+                <div class="growth-cards" >
+                    <div class="add-card" id="add-card">
+                        <div class="add-card-content">
+                            <i class="fas fa-plus"></i>
+                            <span>Add New Crop</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Weather Section -->
+                <div class="weather">
+                    <div class="weather-day" id="today-weather">
+                        <!-- Today's weather data will be dynamically inserted here -->
+                    </div>
+                    <div class="weather-day" id="tomorrow-weather">
+                        <!-- Tomorrow's weather data will be dynamically inserted here -->
+                    </div>
+                </div>
+                
+                <!-- Farmer Plan -->
+                <div class="farmer-plan card">
+                    <h3>Cool Progress Farm</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 85%"></div>
+                    </div>
+                </div>
+                
+                <!-- Productive Analysis -->
+                <div class="productive-analysis card">
+                    <h3>Productive analysis</h3>
+                    <div class="chart">
+                        <div class="chart-bar" style="height: 90%"><span>90%</span></div>
+                        <div class="chart-bar" style="height: 10%"><span>10%</span></div>
+                        <div class="chart-bar" style="height: 5%"><span>5%</span></div>
+                        <div class="chart-bar" style="height: 1%"><span>1%</span></div>
+                    </div>
+                    <div class="chart-labels">
+                        <span>April</span>
+                        <span>May</span>
+                        <span>June</span>
+                        <span>July</span>
+                        <span>August</span>
+                        <span>September</span>
+                    </div>
+                </div>
+                
+                <!-- Stats -->
+                <div class="stats card">
+                    <h3 class="fas">Select a Crop</h3>
+                    <div class="stats-grid">
+                        <div class="stat">
+                            <span> Temperature <i class="fas fa-thermometer-half"></i></span>
+                            <span id="temp"> - - </span>
+                        </div>
+                        <div class="stat">
+                            <span>Soil Moisture <i class="fas fa-tint"></i></span>
+                            <span id="soil-moisture"> - - </span>
+                        </div>
+                        <div class="stat">
+                            <span>Humidity <i class="fas fa-water"></i></span>
+                            <span id="humidity"> - - </span>
+                        </div>
+                        <div class="stat">
+                            <span>Window Status</span>
+                            <span id="window"> - - </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Soil Stats -->
+                <!-- <div class="soil-stats card">
+                    <div class="stat">
+                        <span>20.5 °C</span>
+                        <small>real-time temperature</small>
+                    </div>
+                    <div class="stat">
+                        <span>97 kPa</span>
+                        <small>real-time soil Moisture</small>
+                    </div>
+                </div> -->
+
+                <!-- ChatBot Section -->
+                <div class="chatbot-wrapper">
+                    <div class="chatbot-section">
+                        <h3>Chat with AuraBot</h3>
+                        <div class="chatbot-container">
+                            <div id="chatbot-messages" class="chatbot-messages">
+                                <!-- Chat messages will appear here -->
+                            </div>
+                            <div class="chatbot-input-container">
+                                <input type="text" id="chatbot-input" placeholder="Type your message..." />
+                                <button id="chatbot-send" class="btn">Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <canvas id="canvas"></canvas>
+
+    <script type="module" src="/static/scripts/main.js"></script>
+</body>
+</html>
