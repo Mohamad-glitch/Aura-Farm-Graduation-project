@@ -15,7 +15,7 @@ export async function saveCardsToStorage(cardData) {
             harvest_ready: Boolean(cardData.harvest_ready),
         };
 
-        const response = await fetch(`https://whatever-qw7l.onrender.com/farms/crops`, {
+        const response = await fetch(`https://http://127.0.0.1:8000/farms/crops`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ export async function loadCardsFromStorage(createCropCard, maxCrops, addCardBtn)
         const existingCards = container.querySelectorAll('.card:not(.add-card)');
         existingCards.forEach(card => card.remove());
 
-        const response = await fetch('https://whatever-qw7l.onrender.com/farms/crops', {
+        const response = await fetch('https://http://127.0.0.1:8000/farms/crops', {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`

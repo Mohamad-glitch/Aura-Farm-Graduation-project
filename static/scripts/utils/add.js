@@ -66,7 +66,7 @@ function createCropCard(crop, container, id = `crop-${Date.now()}`, progress = 0
 
             let id = card.id;
             try {
-                const response = await fetch('https://whatever-qw7l.onrender.com/farms/sensorStats', {
+                const response = await fetch('https://http://127.0.0.1:8000/farms/sensorStats', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('authToken')}`
@@ -98,7 +98,7 @@ function createCropCard(crop, container, id = `crop-${Date.now()}`, progress = 0
             }
 
             try {
-                const response = await fetch('https://whatever-qw7l.onrender.com/farms/window-status', {
+                const response = await fetch('https://http://127.0.0.1:8000/farms/window-status', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('authToken')}`
@@ -127,7 +127,7 @@ function createCropCard(crop, container, id = `crop-${Date.now()}`, progress = 0
         let id = card.id;
         if (confirm('Are you sure you want to remove this card?')) {
             try {
-                const response = await fetch(`https://whatever-qw7l.onrender.com/farms/crops/${id}`, {
+                const response = await fetch(`https://http://127.0.0.1:8000/farms/crops/${id}`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('authToken')}`},

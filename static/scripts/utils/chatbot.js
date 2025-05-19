@@ -28,7 +28,7 @@ export function setupChatbot() {
 
         // Send user's message to the server and fetch chatbot response
         try {
-            const response = await fetch('https://whatever-qw7l.onrender.com/chat_bot', {
+            const response = await fetch('https://http://127.0.0.1:8000/chat_bot', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

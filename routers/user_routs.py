@@ -90,7 +90,7 @@ def register_user(user: UserCreate, session: SessionDep):
     if db_user.farm:
         response.farm_name = db_user.farm.name
 
-    return RedirectResponse(url="https://whatever-qw7l.onrender.com/login", status_code=303)
+    return RedirectResponse(url="http://127.0.0.1:8000/login", status_code=303)
 
 @router.get("/show_user")
 def show_user(session: SessionDep, current_user: User = Depends(get_current_user)):

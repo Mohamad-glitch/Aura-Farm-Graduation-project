@@ -6,5 +6,5 @@ document.querySelector('.logout').addEventListener('click', (e) => {
     localStorage.removeItem('authToken');
 
     // Redirect to login page
-    window.location.href = "https://whatever-qw7l.onrender.com/login";
+    window.location.href = "https://http://127.0.0.1:8000/login";
 });

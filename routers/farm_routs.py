@@ -46,8 +46,7 @@ SessionDep = Annotated[Session, Depends(get_session)]
 
 #AI things
 #----------------------------------------------------------------------------------------------------------------------------------
-pretrained_model = YOLO("yolov8n.pt")
-custom_model = YOLO("best.pt")
+
 
 #----------------------------------------------------------------------------------------------------------------------------------
 
@@ -198,45 +197,48 @@ def get_window_status_for_frontend(current_user: User = Depends(get_current_user
 def analyze_photo():
     print("Starting photo analysis...")
 
-    # Load the image from the given file path
-    image = cv2.imread("./OIP (2).jpg")
-    if image is None:
-        print("Error: Cannot open image.")
-        return {"error": "Image not found"}
+    RTSP_URL = "rtsp://AuraCamera:12345678@192.168.70.134:554/stream1"
+    RETRIES = 5
+    TIMEOUT = 60_000  # ms
 
-    # Run the analysis
-    try:
-        results_pretrained = pretrained_model.predict(image, verbose=False)
-    except Exception as e:
-        print(f"Error with pretrained model: {e}")
-        return {"error": f"Error with pretrained model: {e}"}
+    # --- Load model(s) ---
+    custom = YOLO("best.pt")  # your own model
+    coco = YOLO("yolov8n.pt")  # optional second model
 
-    try:
-        results_custom = custom_model.predict(image, verbose=False)
-    except Exception as e:
-        print(f"Error with custom model: {e}")
-        return {"error": f"Error with custom model: {e}"}
+    # --- Open stream ---
+    cap = cv2.VideoCapture()
+    cap.set(cv2.CAP_PROP_OPEN_TIMEOUT_MSEC, TIMEOUT)
+    cap.set(cv2.CAP_PROP_READ_TIMEOUT_MSEC, TIMEOUT)
+    if not cap.open(RTSP_URL):
+        raise RuntimeError("Cannot open RTSP stream")
 
-    # Get class names from both models
-    class_ids_pretrained = results_pretrained[0].boxes.cls.int().tolist()
-    names_pretrained = [pretrained_model.names[cid] for cid in class_ids_pretrained]
-
-    class_ids_custom = results_custom[0].boxes.cls.int().tolist()
-    names_custom = [custom_model.names[cid] for cid in class_ids_custom]
-
-    # Combine the names from both models
-    combined_names = names_pretrained + names_custom
-
-    # Count occurrences of each detected class
-    final_counts = Counter(combined_names)
-
-    if final_counts:
-        output_str = ', '.join([f"{v} {k}" for k, v in final_counts.items()])
+    # --- Grab with retry ---
+    for attempt in range(RETRIES):
+        ok, frame = cap.read()
+        if ok and frame is not None:
+            break
+        print(f"Grab failed ({attempt + 1}/{RETRIES}); retrying…")
+        time.sleep(1)
     else:
-        output_str = 'none'
+        raise RuntimeError("All frame‑grab attempts failed")
 
-    print("Finished photo analysis.")
-    return {"result": dict(final_counts)}
+    cap.release()
+
+    # --- Run inference ---
+    res_custom = custom.predict(frame, verbose=False)[0]
+    res_coco = coco.predict(frame, verbose=False)[0]  # drop if not needed
+
+    names = (
+            [custom.names[int(c)] for c in res_custom.boxes.cls] +
+            [coco.names[int(c)] for c in res_coco.boxes.cls]
+    )
+    counts = Counter(names)
+
+    # --- Present results ---
+
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    return ", ".join(f"{v} {k}" for k, v in counts.items()) or "none"
 
 @router.get("/photo_analysis")
 async def photo_analysis_result():

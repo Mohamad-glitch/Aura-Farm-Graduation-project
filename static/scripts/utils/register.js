@@ -15,7 +15,7 @@ document.querySelector('.login-form').addEventListener('submit', async (e) => {
     }
 
     try {
-        const response = await fetch('https://whatever-qw7l.onrender.com/register', {
+        const response = await fetch('https://http://127.0.0.1:8000/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',  

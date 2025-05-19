@@ -3,7 +3,7 @@ export async function updateUsername() {
     if (!usernameElement) return;
 
     try {
-        const response = await fetch('https://whatever-qw7l.onrender.com/show_user', {
+        const response = await fetch('https://http://127.0.0.1:8000/show_user', {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('authToken')}`
