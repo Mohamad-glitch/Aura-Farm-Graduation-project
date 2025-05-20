@@ -56,7 +56,7 @@ function saveEditedTitles() {
         const cardId = card.id; // Assuming the card's ID is stored in the `id` attribute
 
         if (newTitle !== originalTitle) {
-            fetch(`https://http://127.0.0.1:8000/farms/crops/${cardId}`, {
+            fetch(`http://127.0.0.1:8000/farms/crops/${cardId}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',

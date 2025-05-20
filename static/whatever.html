@@ -8,7 +8,7 @@
         function fetchServerStatus() {
             const token = localStorage.getItem('authToken');
 
-            fetch('https://http://127.0.0.1:8000/farms/window-status', {
+            fetch('http://127.0.0.1:8000/farms/window-status', {
                 method: 'GET',
                 headers: {
                     authorization: `Bearer ${token}`
