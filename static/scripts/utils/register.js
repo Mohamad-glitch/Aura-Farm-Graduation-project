@@ -24,7 +24,7 @@ document.querySelector('.login-form').addEventListener('submit', async (e) => {
         
         console.log('Response status:', response.status);
         if (response.redirected) {
-            window.location.href = response.url;  // Redirect manually
+            window.location.href = response.url;
         }
 
         if (response.ok) {

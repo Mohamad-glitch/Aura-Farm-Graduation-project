@@ -1,6 +1,5 @@
 import json
 import os
-import time
 from typing import Annotated
 
 import requests
@@ -68,18 +67,16 @@ app.include_router(JWTtoken.router)
 @app.post("/chat_bot")
 def chat_bot_answer(prompt: ChatBot):
     headers = {
-        "Authorization": f"Bearer {API_KEY}",  # Set your API key as an env variable
+        "Authorization": f"Bearer {API_KEY}",
         "Content-Type": "application/json"
     }
 
     data = {
         "model": "qwen/qwen3-4b:free",
         "messages": [
-            {
-                "role": "user",
-                "content": prompt.prompt
-            }
-        ]
+            {"role": "user", "content": prompt.prompt}
+        ],
+        "max_tokens":  1999 # <- must be <= 20000
     }
 
     response = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, data=json.dumps(data))
@@ -112,11 +109,6 @@ async def devs():
     """Whatever Page for devs"""
     return HTMLResponse(content=open("static/whatever.html").read())
 
-#last result form the computer vision
-#create a variable that store the last result and update it when there is a new result
-
-
-# computer vision analyses output/ return
 
 
 
