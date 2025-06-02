@@ -1,6 +1,6 @@
 import { saveCardsToStorage } from './card_transfer.js';
 import { isEditMode } from './edit_mode.js';
-export const MAX_CROPS = 4; // MAX_CROPS is exported
+export const MAX_CROPS = 4; // Maximum number of crops allowed
 let addCardBtn;
 
 export function setupAddCard() {
@@ -14,17 +14,20 @@ export function setupAddCard() {
 
     addCardBtn.addEventListener('click', () => {
         const currentCrops = container.querySelectorAll('.card:not(.add-card)');
+        // Prevent adding more than MAX_CROPS cards
         if (currentCrops.length >= MAX_CROPS) {
             addCardBtn.style.display = "none";
             return;
         }
 
+        // Prompt user for crop name
         const cropName = prompt("Enter the crop name:");
         if (!cropName || cropName.trim() === "") {
             alert("Crop name cannot be empty.");
             return;
         }
 
+        // Create and insert new crop card
         const newCard = createCropCard({ name: cropName.trim() }, container);
         container.insertBefore(newCard, addCardBtn);
         const data = {
@@ -32,16 +35,23 @@ export function setupAddCard() {
             growth_percent: 0,
             harvest_ready: false
         };
-
+        // Hide add button if max crops reached
         if (currentCrops.length + 1 >= MAX_CROPS) {
             addCardBtn.style.display = "none";
         }
-
+        // Save new card data to storage
         saveCardsToStorage(data);
     });
     return { createCropCard, MAX_CROPS, addCardBtn };
 }
-// creating a crop card
+/**
+ * Creates a crop card DOM element with event listeners for stats and removal.
+ * @param {Object} crop - Crop data object.
+ * @param {HTMLElement} container - The container to which the card belongs.
+ * @param {string} id - Unique card ID.
+ * @param {number} progress - Growth progress percentage.
+ * @returns {HTMLElement} The created card element.
+ */
 function createCropCard(crop, container, id = `crop-${Date.now()}`, progress = 0) {
     const card = document.createElement('div');
     card.className = 'card';
@@ -56,7 +66,7 @@ function createCropCard(crop, container, id = `crop-${Date.now()}`, progress = 0
         </div>
     `;
 
-    // Add click event to update the stats card
+    // Card click event: fetch and display sensor stats and window status
     card.addEventListener ('click', async() => {
         if (isEditMode) return;
 
@@ -66,6 +76,7 @@ function createCropCard(crop, container, id = `crop-${Date.now()}`, progress = 0
 
             let id = card.id;
             try {
+                // Fetch sensor statistics from backend
                 const response = await fetch('http://127.0.0.1:8000/farms/sensorStats', {
                     method: 'GET',
                     headers: {
@@ -78,7 +89,7 @@ function createCropCard(crop, container, id = `crop-${Date.now()}`, progress = 0
                 }
         
                 const data = await response.json();
-                const temp = data.temperature; //10
+                const temp = data.temperature;
                 const humidity = data.humidity;
                 const moisture = data.soil_moisture;     
                 
@@ -98,6 +109,7 @@ function createCropCard(crop, container, id = `crop-${Date.now()}`, progress = 0
             }
 
             try {
+                // Fetch window status from backend
                 const response = await fetch('http://127.0.0.1:8000/farms/window-status', {
                     method: 'GET',
                     headers: {
@@ -120,13 +132,14 @@ function createCropCard(crop, container, id = `crop-${Date.now()}`, progress = 0
         }
     });
 
-    // remove button click event listener
+    // Remove button click event: deletes card from backend and UI
     const removeBtn = card.querySelector('.remove-card');
     removeBtn.addEventListener('click', async (e) => {
         e.stopPropagation();
         let id = card.id;
         if (confirm('Are you sure you want to remove this card?')) {
             try {
+                // Send DELETE request to backend to remove crop
                 const response = await fetch(`http://127.0.0.1:8000/farms/crops/${id}`, {
                     method: 'DELETE',
                     headers: {
@@ -142,6 +155,7 @@ function createCropCard(crop, container, id = `crop-${Date.now()}`, progress = 0
                 console.log(`Card with ID ${id} deleted successfully.`);
                 card.remove();
 
+                // Show add button if below max crops after removal
                 const currentCrops = container.querySelectorAll('.card:not(.add-card)');
                 if (currentCrops.length < MAX_CROPS) {
                     addCardBtn.style.display = "flex";
@@ -151,7 +165,7 @@ function createCropCard(crop, container, id = `crop-${Date.now()}`, progress = 0
             }
         }
     });
-    
+    // Focus on the card title for accessibility
     const title = card.querySelector('h3');
     title.focus();
     return card;

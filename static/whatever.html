@@ -22,7 +22,7 @@
             })
             .then(data => {
                 const p = document.getElementById('togglep');
-                const currentState = data.status; // Assuming the server returns { status: "open" } or { status: "close" }
+                const currentState = data.status;
                 p.dataset.state = currentState;
                 p.textContent = currentState === 'open' ? 'Close' : 'Open';
             })
@@ -31,7 +31,6 @@
             });
         }
 
-        // Fetch the current server status when the page loads
         window.onload = fetchServerStatus;
     </script>
 </head>

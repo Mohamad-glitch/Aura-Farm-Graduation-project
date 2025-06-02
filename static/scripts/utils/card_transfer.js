@@ -1,5 +1,14 @@
+// Indicates if cards are currently being loaded from storage (prevents save during load)
 let isLoadingFromStorage = false;
+// Used to trigger a one-time reload after saving a card
 let oneTimeReload = false;
+
+/**
+ * Saves a crop card's data to the backend storage.
+ * Sends a POST request with crop data to the backend API.
+ * @param {Object} cardData - The crop card data to save.
+ * @returns {Promise<Object>} The saved card data from the backend.
+ */
 export async function saveCardsToStorage(cardData) {
     if (isLoadingFromStorage || !cardData) return;
     try {
@@ -29,6 +38,7 @@ export async function saveCardsToStorage(cardData) {
             throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
         }
         
+        // Optionally reload the page after saving (if flagged)
         if (oneTimeReload) {
             oneTimeReload = false;
             location.reload();
@@ -40,6 +50,13 @@ export async function saveCardsToStorage(cardData) {
     }
 }
 
+/**
+ * Loads crop cards from backend storage and renders them in the UI.
+ * Handles authentication, fetches cards, and manages add button visibility.
+ * @param {Function} createCropCard - Function to create a crop card DOM element.
+ * @param {number} maxCrops - Maximum number of crop cards allowed.
+ * @param {HTMLElement} addCardBtn - The "Add Card" button element.
+ */
 export async function loadCardsFromStorage(createCropCard, maxCrops, addCardBtn) {
     const container = document.querySelector('.growth-cards');
     if (!container) return;
@@ -51,10 +68,11 @@ export async function loadCardsFromStorage(createCropCard, maxCrops, addCardBtn)
             throw new Error('No authentication token found');
         }
 
-        // Clear existing cards
+        // Clear existing cards from the UI (except the add card button)
         const existingCards = container.querySelectorAll('.card:not(.add-card)');
         existingCards.forEach(card => card.remove());
 
+        // Fetch crop cards from backend
         const response = await fetch('http://127.0.0.1:8000/farms/crops', {
             method: 'GET',
             headers: {
@@ -68,7 +86,7 @@ export async function loadCardsFromStorage(createCropCard, maxCrops, addCardBtn)
 
         const cardsData = await response.json();
 
-        // Process and display cards
+        // Process and display unique cards
         const cardsContainer = document.createDocumentFragment();
         const uniqueCards = new Map();
 
@@ -90,9 +108,10 @@ export async function loadCardsFromStorage(createCropCard, maxCrops, addCardBtn)
             }
         });
 
+        // Insert all loaded cards before the add card button
         container.insertBefore(cardsContainer, container.lastElementChild);
 
-        // Update add button visibility
+        // Update add button visibility based on number of cards
         if (addCardBtn) {
             addCardBtn.style.display = uniqueCards.size >= maxCrops ? "none" : "flex";
         }

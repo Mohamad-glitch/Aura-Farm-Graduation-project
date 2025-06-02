@@ -49,7 +49,7 @@ class Tree {
         this.gravity = 0.098;
         this.loopDelay = 500;
         this.loopEnd = Utils.dateValue;
-        this.maxGenerations = 10;
+        this.maxGenerations = 9;
 
         if (this.C) this.init();
     }

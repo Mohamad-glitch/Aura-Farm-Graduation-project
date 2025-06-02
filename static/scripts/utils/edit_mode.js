@@ -1,27 +1,40 @@
-export let isEditMode = false;
-let deletedCards = [];
-let editedCards = new Map();
+/**
+ * Edit mode logic for crop cards.
+ * Allows users to remove cards and edit crop titles in the UI.
+ * Handles saving changes to the backend and reverting edits if canceled.
+ */
 
+export let isEditMode = false; // Tracks if edit mode is active
+let deletedCards = [];         // Stores cards marked for deletion (for undo)
+let editedCards = new Map();   // Maps cards to their original titles for revert
+
+/**
+ * Toggles edit mode on or off.
+ * In edit mode: shows remove buttons and makes titles editable.
+ * On exit: saves or reverts changes, disables edit mode UI.
+ */
 export function toggleEditMode() {
     if (!isEditMode) {
         isEditMode = true;
+        // Show remove buttons and attach removal handler
         document.querySelectorAll('.remove-card').forEach(button => {
             button.style.display = "block";
             button.addEventListener('click', handleCardRemoval);
         });
 
+        // Make card titles editable and attach input handler
         document.querySelectorAll('.card h3').forEach(title => {
             title.setAttribute('contenteditable', 'true');
             title.classList.add('editable');
             title.addEventListener('input', handleTitleEdit);
         });
     } else {
-        // Exit edit mode
+        // Exit edit mode: confirm or revert changes
         const confirmed = confirm("Confirm crop title edits?");
         if (confirmed) {
             saveEditedTitles();
         } else {
-            // Revert changes
+            // Revert deleted cards and titles
             deletedCards.forEach(card => card.style.display = "block");
             editedCards.forEach((originalTitle, card) => {
                 const title = card.querySelector('h3');
@@ -33,6 +46,11 @@ export function toggleEditMode() {
     updateEditButtonUI();
 }
 
+/**
+ * Handles removal of a crop card in edit mode.
+ * Hides the card and tracks it for possible undo.
+ * @param {Event} e - The click event.
+ */
 function handleCardRemoval(e) {
     const card = e.target.closest('.card');
     if (card) {
@@ -41,6 +59,11 @@ function handleCardRemoval(e) {
     }
 }
 
+/**
+ * Handles editing of a crop card title in edit mode.
+ * Tracks the original title for possible revert.
+ * @param {Event} e - The input event.
+ */
 function handleTitleEdit(e) {
     const card = e.target.closest('.card');
     if (card && !editedCards.has(card)) {
@@ -48,6 +71,10 @@ function handleTitleEdit(e) {
     }
 }
 
+/**
+ * Saves edited crop titles to the backend using PATCH requests.
+ * Only sends updates for titles that have changed.
+ */
 function saveEditedTitles() {
     const authToken = localStorage.getItem('authToken'); // Retrieve the auth token
 
@@ -82,6 +109,10 @@ function saveEditedTitles() {
     editedCards.clear(); // Clear the edited cards map after saving
 }
 
+/**
+ * Updates the edit button UI to reflect the current mode.
+ * Changes icon and active state.
+ */
 function updateEditButtonUI() {
     const editButton = document.getElementById('edit');
     if (editButton) {
@@ -92,6 +123,10 @@ function updateEditButtonUI() {
     }
 }
 
+/**
+ * Disables edit mode and resets UI changes.
+ * Hides remove buttons and makes titles non-editable.
+ */
 export function disableEditMode() {
     isEditMode = false;
     document.querySelectorAll('.remove-card').forEach(btn => {
