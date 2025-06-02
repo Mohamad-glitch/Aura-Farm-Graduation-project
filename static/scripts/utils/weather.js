@@ -1,12 +1,6 @@
-// OpenWeatherMap API key and endpoint
 const API_KEY = "25f3e1edd5723516d5a24302fd21f7e6";
 const API_URL = "https://api.openweathermap.org/data/2.5/forecast";
 
-/**
- * Fetches weather data for a given city and updates the UI.
- * Handles errors and falls back to error display if needed.
- * @param {string} city - The city to fetch weather for (default: "Irbid").
- */
 export async function fetchWeather(city = "Irbid") {
     try {
         const response = await fetch(`${API_URL}?q=${city}&appid=${API_KEY}&units=metric`);
@@ -19,9 +13,6 @@ export async function fetchWeather(city = "Irbid") {
     }
 }
 
-/**
- * Displays a fallback UI when weather data cannot be loaded.
- */
 function showWeatherError() {
     document.getElementById("today-weather").innerHTML = `
         <div class="weather-day-content">
@@ -47,10 +38,6 @@ function showWeatherError() {
     `;
 }
 
-/**
- * Updates the weather UI for today and tomorrow using fetched data.
- * @param {Object} data - Weather data from the API.
- */
 function updateWeatherUI(data) {
     const todayWeather = document.getElementById("today-weather");
     const tomorrowWeather = document.getElementById("tomorrow-weather");
@@ -75,18 +62,11 @@ function updateWeatherUI(data) {
     tomorrowWeather.innerHTML = generateWeatherHTML(tomorrowData, "Tomorrow", tomorrowDate);
 }
 
-/**
- * Extracts average day and night temperatures and icons for a given date.
- * @param {Array} weatherList - List of weather data points.
- * @param {Date} targetDate - The date to extract data for.
- * @param {number} timezoneOffset - Timezone offset in seconds.
- * @returns {Object} Object with dayTemp, dayIcon, nightTemp, nightIcon.
- */
 function getDayNightTemperatures(weatherList, targetDate, timezoneOffset) {
     // Adjust targetDate for the API's timezone
     const localDate = new Date(targetDate.getTime() + timezoneOffset);
 
-    // Define day (12PM-6PM) and night (12AM-12PM next day) ranges in local time
+    // Define day (9AM-3PM) and night (9PM-3AM) ranges in local time
     const dayStart = new Date(localDate);
     dayStart.setHours(12, 0, 0, 0);
     const dayEnd = new Date(localDate);
@@ -118,22 +98,12 @@ function getDayNightTemperatures(weatherList, targetDate, timezoneOffset) {
     };
 }
 
-/**
- * Calculates the average temperature from a list of weather data points.
- * @param {Array} data - List of weather data points.
- * @returns {number|null} Average temperature or null if no data.
- */
 function calculateAverageTemp(data) {
     if (!data || data.length === 0) return null;
     const sum = data.reduce((acc, item) => acc + item.main.temp, 0);
     return Math.round(sum / data.length);
 }
 
-/**
- * Determines the most frequent weather icon for a set of data points.
- * @param {Array} data - List of weather data points.
- * @returns {string} FontAwesome icon name.
- */
 function getWeatherIcon(data) {
     if (!data || data.length === 0) return "cloud";
     const iconCounts = {};
@@ -144,13 +114,6 @@ function getWeatherIcon(data) {
     return Object.keys(iconCounts).reduce((a, b) => iconCounts[a] > iconCounts[b] ? a : b);
 }
 
-/**
- * Generates HTML for displaying weather data for a day.
- * @param {Object} data - Weather data for the day.
- * @param {string} label - "Today" or "Tomorrow".
- * @param {string} date - Formatted date string.
- * @returns {string} HTML string.
- */
 function generateWeatherHTML(data, label, date) {
     return `
         <div class="weather-header">
@@ -176,11 +139,6 @@ function generateWeatherHTML(data, label, date) {
     `;
 }
 
-/**
- * Maps OpenWeatherMap weather conditions to FontAwesome icon names.
- * @param {string} condition - Weather condition string.
- * @returns {string} FontAwesome icon name.
- */
 function weatherIcon(condition) {
     switch (condition.toLowerCase()) {
         case "clear": return "sun";

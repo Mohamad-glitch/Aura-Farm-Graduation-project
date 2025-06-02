@@ -206,11 +206,11 @@ def analyze_photo():
     coco = YOLO("yolov8n.pt")  # optional second model
 
     # --- Open stream ---
-    cap = cv2.VideoCapture()
+    cap = cv2.VideoCapture(0)
     cap.set(cv2.CAP_PROP_OPEN_TIMEOUT_MSEC, TIMEOUT)
     cap.set(cv2.CAP_PROP_READ_TIMEOUT_MSEC, TIMEOUT)
-    if not cap.open(RTSP_URL):
-        raise RuntimeError("Cannot open RTSP stream")
+    # if not cap.open(RTSP_URL):
+    #     raise RuntimeError("Cannot open RTSP stream")
 
     # --- Grab with retry ---
     for attempt in range(RETRIES):
@@ -238,12 +238,10 @@ def analyze_photo():
 
     cv2.waitKey(0)
     cv2.destroyAllWindows()
-    return ", ".join(f"{v} {k}" for k, v in counts.items()) or "none"
+    return [f"{v} {k}" for k, v in counts.items() or "none"]
 
 @router.get("/photo_analysis")
 async def photo_analysis_result():
     # Run the analysis in a thread and await the result
     result = await run_in_threadpool(analyze_photo)
-    return result
-
-
+    return {"result" :result}
