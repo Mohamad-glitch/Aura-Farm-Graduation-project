@@ -35,8 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
     loadCardsFromStorage(createCropCard, MAX_CROPS, addCardBtn);
 
     themeToggle('toggle-theme');
-    const { addNotification } = setupNotifications('noti');
-    setTimeout(() => addNotification('KYS'), 3000);
+    setupNotifications("notif");
 
     // Initialize chatbot
     setupChatbot();
