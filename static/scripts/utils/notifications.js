@@ -81,7 +81,8 @@ export function setupNotifications(notificationButtonId) {
             console.error('Error fetching notifications:', error);
         }
     }
-
+ 
+    
 
 
     // Expose helper functions for use elsewhere (e.g., in main.js)
