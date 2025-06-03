@@ -35,7 +35,11 @@ document.addEventListener('DOMContentLoaded', function () {
     loadCardsFromStorage(createCropCard, MAX_CROPS, addCardBtn);
 
     themeToggle('toggle-theme');
-    setupNotifications("notif");
+    const { fetchNotifications } = setupNotifications("notif");
+    const notifButton = document.getElementById("notif");
+    if (notifButton && fetchNotifications) {
+        notifButton.addEventListener("click", fetchNotifications);
+    }
 
     // Initialize chatbot
     setupChatbot();
