@@ -9,10 +9,20 @@ import { updateUsername } from './utils/current_user.js';
 import { themeToggle } from './utils/toggle_theme.js';
 import { setupChatbot } from './utils/chatbot.js'; // Import the chatbot setup function
 
+
+
 document.addEventListener('DOMContentLoaded', function () {
+    treeAnimation();
     updateUsername();
     initCalendar();
     fetchWeather("Irbid");
+
+    const toggle_theme = document.getElementById('toggle-theme')
+    if(localStorage.getItem('theme')){
+        toggle_theme.innerHTML = '<i class = "fas fa-sun"></i>';
+    }
+        else{    toggle_theme.innerHTML = '<i class = "fas fa-moon"></i>';
+    }
 
     // Set up edit button
     const editButton = document.getElementById('edit');
@@ -24,10 +34,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const { createCropCard, MAX_CROPS, addCardBtn } = setupAddCard();
     loadCardsFromStorage(createCropCard, MAX_CROPS, addCardBtn);
 
-    themeToggle('settings');
-const { addNotification, fetchNotifications } = setupNotifications('noti');
-// To fetch from backend and show:
-fetchNotifications();
+    themeToggle('toggle-theme');
+    const { addNotification } = setupNotifications('noti');
+    setTimeout(() => addNotification('KYS'), 3000);
 
     // Initialize chatbot
     setupChatbot();

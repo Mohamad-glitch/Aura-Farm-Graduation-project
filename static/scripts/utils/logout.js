@@ -6,5 +6,5 @@ document.querySelector('.logout').addEventListener('click', (e) => {
     localStorage.removeItem('authToken');
 
     // Redirect to login page
-    window.location.href = "https://real-deal.onrender.com/login";
+    window.location.href = "http://127.0.0.1:8000/login";
 });

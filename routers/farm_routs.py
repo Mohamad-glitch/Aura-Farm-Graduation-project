@@ -1,54 +1,45 @@
 import time
+from collections import Counter
 from typing import Annotated
 
+import cv2
 from fastapi import APIRouter
 from fastapi import Depends, HTTPException
 from sqlalchemy import desc
 from sqlmodel import Session, SQLModel, create_engine, select
-
-from collections import Counter
-from ultralytics import YOLO
-import cv2
 from starlette.concurrency import run_in_threadpool
-import main
+from ultralytics import YOLO
+
 from models.crop import Crop, CropCreate, CropNameUpdate
 from models.farm import Farm, FarmPublic
 from models.sensor import SensorCreate, Sensor, WindowStatus
 from models.user import User
 from routers.JWTtoken import get_current_user
 
-#hi
-router = APIRouter(
-    prefix="/farms",
-    tags=["farm"]
-)
+# hi
+router = APIRouter(prefix="/farms", tags=["farm"])
 
 sql_file_name = "farm_database.db"
 sql_url = f"sqlite:///./{sql_file_name}"
-connect_args = {"check_same_thread": False} # recommended by FastAPI docs
+connect_args = {"check_same_thread": False}  # recommended by FastAPI docs
 
-#connecting database
+# connecting database
 engine = create_engine(sql_url, connect_args=connect_args)
 
 
-#creating database
+# creating database
 def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
+
 
 # This is what ensures that we use a single session per request.
 def get_session():
     with Session(engine) as session:
-        yield session #yield that will provide a new Session for each request.
+        yield session  # yield that will provide a new Session for each request.
 
 
 # we create an Annotated dependency SessionDep to simplify the rest of the code that will use this dependency.
 SessionDep = Annotated[Session, Depends(get_session)]
-
-#AI things
-#----------------------------------------------------------------------------------------------------------------------------------
-
-
-#----------------------------------------------------------------------------------------------------------------------------------
 
 
 # create the database on starting app startup
@@ -57,6 +48,7 @@ def on_startup():
     create_db_and_tables()
 
 
+# get all farms in DB from this end poit 
 @router.get("/read_all")
 def read_farm(session: SessionDep):
     """Get All Farms In DB"""
@@ -64,13 +56,14 @@ def read_farm(session: SessionDep):
     return farms
 
 
-#to add authentication use this in the function  current_user: User = Depends(get_current_user)
+# for authentication, we add this to the function current_user: User = Depends(get_current_user)
 @router.get("/", response_model=FarmPublic)
 def read_farm(session: SessionDep, current_user: User = Depends(get_current_user)) -> Farm:
     """Get the current user's farm"""
-    farm_name = current_user.farm_id  # assumes 'farm_name' is a field on the User model
+    farm_id = current_user.farm_id  # get the farm name which is == user name
 
-    statement = select(Farm).where(Farm.id == farm_name)
+    # getting the farm from user(authentication) and return it
+    statement = select(Farm).where(Farm.id == farm_id)
     farm = session.exec(statement).first()
     if not farm:
         raise HTTPException(status_code=404, detail="Farm not found")
@@ -78,6 +71,7 @@ def read_farm(session: SessionDep, current_user: User = Depends(get_current_user
     return farm
 
 
+# returning all farm crops from DB
 @router.get("/crops")
 def read_farm_crops(session: SessionDep, current_user: User = Depends(get_current_user)):
     """Get Crops Of Farm """
@@ -88,6 +82,7 @@ def read_farm_crops(session: SessionDep, current_user: User = Depends(get_curren
     return crops
 
 
+# create a crop
 @router.post("/crops")
 def create_crops(crops: CropCreate, session: SessionDep, current_user: User = Depends(get_current_user)):
     """Create Crops Of Farm """
@@ -108,8 +103,10 @@ def create_crops(crops: CropCreate, session: SessionDep, current_user: User = De
     return db_crop
 
 
+# update some fields from the crop which has this id (crop_id) <- path variable
 @router.patch("/crops/{crop_id}")
-def update_crop_name(crop_id: int, crop_data: CropNameUpdate,  session: SessionDep, current_user: User = Depends(get_current_user)):
+def update_crop_name(crop_id: int, crop_data: CropNameUpdate, session: SessionDep,
+                     current_user: User = Depends(get_current_user)):
     crop = session.query(Crop).filter(Crop.id == crop_id).first()
     if not crop:
         raise HTTPException(status_code=404, detail="Crop not found")
@@ -121,6 +118,7 @@ def update_crop_name(crop_id: int, crop_data: CropNameUpdate,  session: SessionD
     return {"message": "Crop name updated successfully", "crop": crop}
 
 
+# deleting a crop from the farm
 @router.delete("/crops/{crop_id}")
 def delete_crops(crop_id: int, session: SessionDep, current_user: User = Depends(get_current_user)):
     """Delete Crops Of Farm """
@@ -133,6 +131,7 @@ def delete_crops(crop_id: int, session: SessionDep, current_user: User = Depends
     return {"message": "Crop Deleted"}
 
 
+# create/ getting latest reading from ESP32(sensor)
 @router.post("/sensor")
 def create_sensor_data(sensor_data: SensorCreate, session: SessionDep, current_user: User = Depends(get_current_user)):
     """Create a new sensor reading for a specific farm."""
@@ -148,44 +147,40 @@ def create_sensor_data(sensor_data: SensorCreate, session: SessionDep, current_u
     return sensor
 
 
+# show the latest data received form the sensors
 @router.get("/sensorStats")
 def read_farm_sensor_stats(session: SessionDep, current_user: User = Depends(get_current_user)):
     """Read sensor Stats for a specific farm."""
     farm_id = current_user.farm_id
 
+    # making a query to get latest readings form the largest ID
     farm_sensor = session.exec(
-        select(Sensor)
-        .where(Sensor.farm_id == farm_id)
-        .order_by(desc(Sensor.id))
-        .limit(1)
-    ).first()
+        select(Sensor).where(Sensor.farm_id == farm_id).order_by(desc(Sensor.id)).limit(1)).first()
     return farm_sensor
 
 
 # Window Show/Control code
-
 # Temporary storage in memory
 last_window_status = {"status": "close"}
 
-# get the
+
+# changing window status
 @router.post("/window-status")
-def receive_window_status(
-        window_status: WindowStatus,
-        current_user: User = Depends(get_current_user)
-):
+def receive_window_status(window_status: WindowStatus, current_user: User = Depends(get_current_user)):
     """
     Receive the current status of the window from Arduino (open/closed).
     """
+    # checking if the values open / closed
     if window_status.status not in ["open", "closed"]:
         raise HTTPException(status_code=400, detail=f"Invalid status received: {window_status.status}")
 
     # Update the last known window status
     last_window_status["status"] = window_status.status
 
-    # You can process it here, for example log or update UI
     return {"message": "Window status received", "status": window_status.status}
 
 
+# get the window status open / closed
 @router.get("/window-status")
 def get_window_status_for_frontend(current_user: User = Depends(get_current_user)):
     """
@@ -206,11 +201,11 @@ def analyze_photo():
     coco = YOLO("yolov8n.pt")  # optional second model
 
     # --- Open stream ---
-    cap = cv2.VideoCapture()
+    cap = cv2.VideoCapture(0)
     cap.set(cv2.CAP_PROP_OPEN_TIMEOUT_MSEC, TIMEOUT)
     cap.set(cv2.CAP_PROP_READ_TIMEOUT_MSEC, TIMEOUT)
-    if not cap.open(RTSP_URL):
-        raise RuntimeError("Cannot open RTSP stream")
+    # if not cap.open(RTSP_URL):
+    #     raise RuntimeError("Cannot open RTSP stream")
 
     # --- Grab with retry ---
     for attempt in range(RETRIES):
@@ -238,12 +233,12 @@ def analyze_photo():
 
     cv2.waitKey(0)
     cv2.destroyAllWindows()
-    return ", ".join(f"{v} {k}" for k, v in counts.items()) or "none"
+    return [f"{v} {k}" for k, v in counts.items() or "none"]
 
+
+# end point to get the result of computer vision analysis
 @router.get("/photo_analysis")
 async def photo_analysis_result():
     # Run the analysis in a thread and await the result
     result = await run_in_threadpool(analyze_photo)
-    return result
-
-
+    return {"result": result}

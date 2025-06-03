@@ -1,7 +1,3 @@
-/**
- * Sets up the chatbot UI and event listeners.
- * Handles user input, displays messages, and communicates with the backend chatbot API.
- */
 export function setupChatbot() {
     const chatbotMessages = document.getElementById('chatbot-messages');
     const chatbotInput = document.getElementById('chatbot-input');
@@ -18,12 +14,11 @@ export function setupChatbot() {
     botMessageElement.innerHTML = "<i class='fas fa-user'></i> Hello, how can I help you?";
     chatbotMessages.appendChild(botMessageElement);
 
-    // Handle send button click
     chatbotSend.addEventListener('click', async () => {
         const userMessage = chatbotInput.value.trim();
         if (!userMessage) return;
     
-        // Display user message in chat window
+        // Display user message
         const userMessageElement = document.createElement('div');
         userMessageElement.className = 'chatbot-message user';
         userMessageElement.textContent = userMessage;
@@ -31,7 +26,7 @@ export function setupChatbot() {
     
         chatbotInput.value = '';
     
-        // Display loading message while waiting for bot response
+        // Display loading message
         const loadingElement = document.createElement('div');
         loadingElement.className = 'chatbot-message bot loading';
         loadingElement.innerHTML ='<i class="fas fa-user"></i> Typing...';
@@ -70,7 +65,6 @@ export function setupChatbot() {
             loadingElement.classList.remove('loading');
         }
     });
-
     // Allow "Enter" key to send message
     chatbotInput.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
@@ -79,12 +73,7 @@ export function setupChatbot() {
     });
 }
 
-/**
- * Formats the bot's response for display in the chat window.
- * Removes bold formatting and applies simple HTML structure.
- * @param {string} content - The bot's response text.
- * @returns {string} - HTML-formatted response.
- */
+// Format bot response with no bold formatting
 function formatBotResponse(content) {
     return (
         '<div>' +

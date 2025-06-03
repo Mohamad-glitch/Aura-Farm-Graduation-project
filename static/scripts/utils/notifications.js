@@ -1,26 +1,19 @@
-/**
- * Sets up notification UI and logic for the dashboard.
- * Handles notification badge, dropdown, and fetching notifications from backend.
- * @param {string} notificationButtonId - The ID of the notification button element.
- * @returns {Object} - Exposes addNotification and fetchNotifications functions.
- */
 export function setupNotifications(notificationButtonId) {
     const notificationButton = document.getElementById(notificationButtonId);
+    
 
-    // Create and configure the notification badge (shows count)
     const notificationBadge = document.createElement('span');
+    const notificationDropdown = document.createElement('div');
+
     notificationBadge.className = 'notification-badge';
     notificationBadge.textContent = '0';
     notificationBadge.style.display = 'none';
     notificationButton.appendChild(notificationBadge);
 
-    // Create and configure the notification dropdown (shows messages)
-    const notificationDropdown = document.createElement('div');
     notificationDropdown.className = 'notification-dropdown';
-    notificationDropdown.innerHTML = '<div class="notification-item">There are no notifications</div>';
+    notificationDropdown.innerHTML = '<div class="notification-item">There are no notifications</div>'; // Default message
     notificationButton.parentNode.appendChild(notificationDropdown);
 
-    // Toggle dropdown open/close on button click
     notificationButton.addEventListener('click', () => {
     if (notificationDropdown.classList.contains('open')) {
         notificationDropdown.style.maxHeight = '0';
@@ -81,8 +74,7 @@ export function setupNotifications(notificationButtonId) {
             console.error('Error fetching notifications:', error);
         }
     }
- 
-    
+
 
 
     // Expose helper functions for use elsewhere (e.g., in main.js)

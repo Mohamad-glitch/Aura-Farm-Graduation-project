@@ -1,7 +1,3 @@
-/**
- * Initializes the interactive calendar UI.
- * Handles rendering, navigation, event marking, and localStorage persistence.
- */
 export function initCalendar() {
     const calendarDays = document.getElementById('calendar-days');
     const currentMonthElement = document.getElementById('current-month');
@@ -15,10 +11,6 @@ export function initCalendar() {
     const markedDates = JSON.parse(localStorage.getItem('markedDates') || '{}');
     const events = JSON.parse(localStorage.getItem('events') || '{}');
 
-    /**
-     * Renders the calendar grid for the current month.
-     * Handles highlighting today, marking event days, and click events for days.
-     */
     function renderCalendar() {
         calendarDays.innerHTML = '';
 
@@ -35,7 +27,7 @@ export function initCalendar() {
         const daysInMonth = lastDayOfMonth.getDate();
         const startingDay = firstDayOfMonth.getDay();
 
-        // Previous month's trailing days (for calendar alignment)
+        // Previous month's trailing days
         const prevMonthLastDay = new Date(year, month, 0).getDate();
         for (let i = 0; i < startingDay; i++) {
             const dayElement = document.createElement('div');
@@ -51,7 +43,6 @@ export function initCalendar() {
             dayElement.classList.add('calendar-day');
             dayElement.textContent = day;
 
-            // Highlight today
             const isToday =
                 day === today.getDate() &&
                 month === today.getMonth();
@@ -60,7 +51,6 @@ export function initCalendar() {
                 dayElement.classList.add('today');
             }
 
-            // Mark days with events
             const dateKey = `${month + 1}-${day}`; // Use only month and day as the key
             if (markedDates[dateKey]) {
                 dayElement.classList.add('has-data');
@@ -68,29 +58,25 @@ export function initCalendar() {
 
             // Add click event to handle adding/viewing events
             dayElement.addEventListener('click', () => {
-                // Prompt user to enter or edit an event for the selected day
                 const eventText = prompt(
                     `Enter an event for ${dateKey}:`,
                     events[dateKey] || ''
                 );
                 if (eventText !== null) {
                     if (eventText.trim() !== '') {
-                        // Save event and mark the day
                         events[dateKey] = eventText;
                         markedDates[dateKey] = true;
                         dayElement.classList.add('has-data');
                     } else {
-                        // Remove event and unmark the day
                         delete events[dateKey];
                         delete markedDates[dateKey];
                         dayElement.classList.remove('has-data');
                     }
-                    // Persist events and marked dates to localStorage
                     localStorage.setItem('events', JSON.stringify(events));
                     localStorage.setItem('markedDates', JSON.stringify(markedDates));
                 }
 
-                // Update event display area
+                // Update event display
                 updateEventDisplay(dateKey, events[dateKey]);
             });
 
@@ -115,11 +101,6 @@ export function initCalendar() {
         updateEventDisplay(todayKey, events[todayKey]);
     }
 
-    /**
-     * Updates the event display area with the event for the given date.
-     * @param {string} dateKey - The key representing the date (MM-DD).
-     * @param {string} eventText - The event text to display.
-     */
     function updateEventDisplay(dateKey, eventText) {
         if (eventText) {
             eventDisplay.innerHTML = `<strong>Event for ${dateKey}:</strong> ${eventText}`;
@@ -128,7 +109,6 @@ export function initCalendar() {
         }
     }
 
-    // Navigation button event listeners
     prevMonthBtn.addEventListener('click', () => {
         currentDate.setMonth(currentDate.getMonth() - 1);
         renderCalendar();
