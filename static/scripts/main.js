@@ -35,9 +35,8 @@ document.addEventListener('DOMContentLoaded', function () {
     loadCardsFromStorage(createCropCard, MAX_CROPS, addCardBtn);
 
     themeToggle('toggle-theme');
-    const { fetchNotifications } = setupNotifications("notif");
     const notifButton = document.getElementById("notif");
-    if (notifButton && fetchNotifications) {
+    if (notifButton) {
         notifButton.addEventListener("click", fetchNotifications);
     }
 
