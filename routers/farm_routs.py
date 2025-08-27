@@ -242,3 +242,5 @@ async def photo_analysis_result():
     # Run the analysis in a thread and await the result
     result = await run_in_threadpool(analyze_photo)
     return {"result": result}
+
+# new comment
